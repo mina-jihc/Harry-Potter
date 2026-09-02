@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Harry Potter</title>
+    <style>
+      body {
+        background: url(aditya-vyas-5qUJfO4NU4o-unsplash.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+      }
+      .top {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 40px;
+        align-items: center;
+      }
+      .links {
+        display: flex;
+        gap: 10px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .links a {
+        color: aliceblue;
+      }
+      .links a:hover {
+        border-bottom: 2px solid rgb(177, 165, 165);
+        padding-bottom: 2px;
+        color: aliceblue;
+      }
+      select .gryf {
+        background-color: #740001;
+        padding: 10px;
+        border: none;
+      }
+      select .slyt {
+        background-color: #1a472a;
+        padding: 10px;
+        border: none;
+      }
+      select .rave {
+        background-color: #0e1a40;
+        padding: 10px;
+        border: none;
+      }
+      select .huff {
+        background-color: #ecb939;
+        padding: 10px;
+        border: none;
+      }
+      select {
+        padding: 10px;
+        border: none;
+        background-color: #d3dcfa;
+        border: 2px solid #0e1a40;
+        background-color: transparent;
+        color: rgb(232, 198, 198);
+      }
+      input {
+        padding: 10px;
+        border: none;
+        background-color: #d3dcfa;
+        border: 2px solid #1a472a;
+        background-color: transparent;
+      }
+      input::placeholder {
+        color: rgb(232, 198, 198);
+      }
+      .izdeu {
+        margin-left: 35%;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 300px);
+        gap: 20px;
+        justify-content: center;
+        padding-top: 30px;
+      }
+      .card {
+        width: 300px;
+        /* background: url(potion.png); */
+        background-size: 100px;
+        background-repeat: no-repeat;
+        background-position: bottom;
+        transition: all 0.3s ease;
+        border: 2px solid rgb(88, 88, 88);
+        color: aliceblue;
+        position: relative;
+      }
+      .card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        transform: translateY(-10px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top">
+        <img
+          src="magic.png"
+          alt="Home"
+          width="60px"
+          height="60px"
+          class="burger"
+        />
+        <div class="links">
+          <a href="#" style="font-weight: 600; text-decoration: none">Home</a>
+          <a
+            href="#"
+            class="favs"
+            style="font-weight: 600; text-decoration: none"
+            >Favourites</a
+          >
+          <a href="#" style="font-weight: 600; text-decoration: none"
+            >Sign In</a
+          >
+        </div>
+      </div>
+      <div class="center">
+        <div class="izdeu">
+          <input type="text" placeholder="Search for a character..." />
+          <select id="selectHouse">
+            <option value="All" class="all">All</option>
+            <option value="Gryffindor" class="gryf">Gryffindor</option>
+            <option value="Slytherin" class="slyt">Slytherin</option>
+            <option value="Ravenclaw" class="rave">Ravenclaw</option>
+            <option value="Hufflepuff" class="huff">Hufflepuff</option>
+          </select>
+        </div>
+        <div class="cards">
+          <!-- <div class="card">
+                    <img src="" alt="">
+                    <h2>Harry</h2>
+                    <p></p>
+                    <b></b>
+                    <p></p>
+                    <p></p>
+                </div> -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const url = "https://hp-api.onrender.com/api/characters";
+      const btn = document.querySelector("button");
+      const inp = document.querySelector("input");
+      const house = document.getElementById("selectHouse");
+      const box = document.querySelector(".cards");
+      const burger = document.querySelector(".burger");
+      const favs = document.querySelector(".favs");
+
+      async function addNewCharacter() {
+        const promise = await fetch(url);
+        const data = await promise.json();
+        box.innerHTML = "";
+
+        const filtered = data.filter((character) => {
+          const search = inp.value.toLowerCase().trim();
+          const select = house.value;
+          const matched = character.name.toLowerCase().includes(search);
+          const selected =
+            select === "All" || select === ""
+              ? true
+              : (character.house || "") === select;
+          return matched && selected;
+        });
+        filtered.forEach((character) => {
+          const card = document.createElement("div");
+          card.innerHTML = ` <div class="card">
+                    <img src="${character.image}" alt="" style="object-fit: cover; height: 300px; width: 300px">
+                    <button style="position: absolute; right: 15px; top: 10px; background-color: transparent; border: none;"><img class = "like" src="image.png" width = "30px"></button>
+                    <h2 style = "padding-left:10px">${character.name}</h2>
+                    <p style = "padding-left:10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">${character.alternate_names[0]}</p>
+                    <p style = "padding-left:10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"><b>Date:</b>${character.dateOfBirth}</p>
+                    <p style = "padding-left:10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"><b>Ancestry:</b>${character.ancestry}</p>
+                    <p style = "padding-left:10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"><b>Patronus:</b>${character.patronus}</p>
+                </div>`;
+          box.appendChild(card);
+
+          const fav = card.querySelector(".like");
+          fav.addEventListener("click", function () {
+            fav.src = fav.src.includes("image.png") ? "heart.png" : "image.png";
+          });
+          
+          //   Favs
+          favs.addEventListener("click", function() {
+              if (fav.src.includes("heart.png")) {
+                  card.style.display = "block";
+              } else {
+                  card.style.display = "none";
+              };
+          });
+        });
+      }
+      inp.addEventListener("input", addNewCharacter);
+      house.addEventListener("change", addNewCharacter);
+      addNewCharacter();
+    </script>
+  </body>
+</html>
